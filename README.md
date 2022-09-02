@@ -31,18 +31,18 @@ $ export LD=g++-[version]
 ```
 Finally, create a virtual environment and install all required packages except qd:
 ```
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
+$ python3 -m venv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
 ```
 ### Windows
 For Windows users, it is recommended to use Ubuntu running on WSL (Windows Subsystem for Linux). If you have that installed, please follow the setup instruction for Linux.
 ### Linux (Ubuntu)
 First please ensure that python3 and gcc are installed. Then run:
 ```
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
+$ python3 -m venv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
 ```
 ### Installation of qd
 The application uses a package called qd to process .k file. Try ```$ pip install qd``` first. If it fails, then it means that you have to compile the package manually. Run commands below:

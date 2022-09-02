@@ -44,7 +44,6 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(left_widget, stretch=1)
 
         self.plotter = QtInteractor(self)
-        self.plotter.disable_anti_aliasing()
         self.plotter.show_axes()
         main_layout.addWidget(self.plotter.interactor, stretch=4)
 
@@ -55,7 +54,7 @@ class MainWindow(QMainWindow):
         self.right_layout.addWidget(self.param_widget, stretch=1, alignment=Qt.AlignTop)
         main_layout.addWidget(right_widget, stretch=1)
 
-        self.setMinimumSize(1500, 800)
+        self.setMinimumSize(1400, 700)
         self.setCentralWidget(main_widget)
 
         self.createMenuBar()
@@ -82,6 +81,7 @@ class MainWindow(QMainWindow):
         self.saved_model_shown = False
         self.prev_camera = None
         self.coords = None
+        self.id_to_index = {}
 
     def createToolBar(self):
         toolbar = QToolBar(self)
@@ -140,13 +140,13 @@ class MainWindow(QMainWindow):
     def loadModel(self, filename):
         self.file = KeyFile(filename, parse_mesh=True)
         nodes = np.matmul(self.A_m, np.array([[1.0, 1754, 28.5, 40, 0.52]]).transpose()).transpose() + self.mu_m
-        nodes = nodes.reshape(-1, 3)
-        self.coords = nodes
+        self.coords = nodes.reshape(-1, 3)
+        self.id_to_index = {id: i for i, id in enumerate(self.file.get_node_ids())}
 
         for part in self.file.get_parts():
             part_nodes = np.zeros(shape=(part.get_nNodes(), 3))
-            for i, index in enumerate(part.get_node_indexes()):
-                part_nodes[i] = nodes[index]
+            for i, id in enumerate(part.get_node_ids()):
+                part_nodes[i] = self.coords[self.id_to_index[id]]
 
             node_ids = [n.get_id() for n in part.get_nodes()]
             node_dict = {id: i for i, id in enumerate(node_ids)}
@@ -223,8 +223,8 @@ class MainWindow(QMainWindow):
 
         for i, part in enumerate(self.file.get_parts()):
             part_nodes = np.zeros(shape=(part.get_nNodes(), 3))
-            for j, index in enumerate(part.get_node_indexes()):
-                part_nodes[j] = pred_coords[index]
+            for j, id in enumerate(part.get_node_ids()):
+                part_nodes[j] = pred_coords[self.id_to_index[id]]
             self.plotter.update_coordinates(part_nodes, self.meshes[i])
 
     def saveModel(self):
