@@ -45,12 +45,12 @@ class MainWindow(QMainWindow):
 
         self.plotter = QtInteractor(self)
         self.plotter.show_axes()
-        main_layout.addWidget(self.plotter.interactor, stretch=4)
+        main_layout.addWidget(self.plotter, stretch=4)
 
         right_widget = QWidget()
         self.right_layout = QVBoxLayout()
         right_widget.setLayout(self.right_layout)
-        self.param_widget = ParameterEditor(self.updateModel, self.saveModel, self.handleParamChanged)
+        self.param_widget = ParameterEditor(self.saveModel, self.handleParamChanged)
         self.right_layout.addWidget(self.param_widget, stretch=1, alignment=Qt.AlignTop)
         main_layout.addWidget(right_widget, stretch=1)
 
@@ -195,13 +195,10 @@ class MainWindow(QMainWindow):
     def handleParamChanged(self, field, value):
         if field == "gender":
             self.params["gender"] = 1 - value
-            self.updateModel()
-        elif field == "age" or field == "stature":
-            self.params[field] = value
-        elif field == "bmi":
-            self.params[field] = value / 10
         else:
-            self.params[field] = value / 100
+            self.params[field] = value
+        
+        self.updateModel()
 
     def updateModel(self):
         para_matrix = np.array([[1.0,
