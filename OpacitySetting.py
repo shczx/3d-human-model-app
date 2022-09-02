@@ -1,5 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QHBoxLayout, QVBoxLayout, QSlider
+from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QHBoxLayout, QVBoxLayout, QDoubleSpinBox
 from QHLine import QHLine
 
 class OpacitySetting(QWidget):
@@ -19,29 +18,23 @@ class OpacitySetting(QWidget):
         grid_layout.setVerticalSpacing(15)
         editor.setLayout(grid_layout)
 
-        self.skt_slider = QSlider(Qt.Horizontal)
-        self.skt_slider.setRange(0, 10)
-        self.skt_slider.setSingleStep(1)
-        self.skt_slider.setSliderPosition(10)
-        self.skt_slider.setEnabled(False)
-        self.skt_slider.valueChanged.connect(lambda v: (opacityChanged(v / 10, "skeleton"),
-                                                        self.skt_label.setText(str(v / 10))))
+        self.skt_box = QDoubleSpinBox()
+        self.skt_box.setRange(0, 1)
+        self.skt_box.setSingleStep(0.1)
+        self.skt_box.setValue(1)
+        self.skt_box.setEnabled(False)
+        self.skt_box.valueChanged.connect(lambda v: opacityChanged(v, "skeleton"))
         grid_layout.addWidget(QLabel("Skeleton:"), 1, 1)
-        grid_layout.addWidget(self.skt_slider, 1, 2)
-        self.skt_label = QLabel("1")
-        grid_layout.addWidget(self.skt_label, 1, 3)
+        grid_layout.addWidget(self.skt_box, 1, 2)
 
-        self.skin_slider = QSlider(Qt.Horizontal)
-        self.skin_slider.setRange(0, 10)
-        self.skin_slider.setSingleStep(1)
-        self.skin_slider.setSliderPosition(3)
-        self.skin_slider.setEnabled(False)
-        self.skin_slider.valueChanged.connect(lambda v: (opacityChanged(v / 10, "skin"),
-                                                        self.skin_label.setText(str(v / 10))))
+        self.skin_box = QDoubleSpinBox()
+        self.skin_box.setRange(0, 1)
+        self.skin_box.setSingleStep(1)
+        self.skin_box.setValue(0.3)
+        self.skin_box.setEnabled(False)
+        self.skin_box.valueChanged.connect(lambda v: opacityChanged(v, "skin"))
         grid_layout.addWidget(QLabel("Skin Surface:"), 2, 1)
-        grid_layout.addWidget(self.skin_slider, 2, 2)
-        self.skin_label = QLabel("0.3")
-        grid_layout.addWidget(self.skin_label, 2, 3)
+        grid_layout.addWidget(self.skin_box, 2, 2)
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -50,5 +43,5 @@ class OpacitySetting(QWidget):
         self.layout.addWidget(editor)
 
     def setState(self, state):
-        self.skt_slider.setEnabled(state)
-        self.skin_slider.setEnabled(state)
+        self.skt_box.setEnabled(state)
+        self.skin_box.setEnabled(state)
